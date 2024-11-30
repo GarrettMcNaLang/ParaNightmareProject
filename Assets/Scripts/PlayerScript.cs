@@ -2,62 +2,44 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    private CharacterController controller;
+    private Vector3 playerVelocity;
+    private bool groundedPlayer;
+    [SerializeField]
+    private float playerSpeed = 2.0f;
+    [SerializeField]
+    private float jumpHeight = 1.0f;
+    [SerializeField]
+    private float gravityValue = -9.81f;
 
-    #region Components
-    private InputSystem_Actions testingInputActions;
-    Rigidbody rb;
-    #endregion
-
-    #region variables
-
-    public float movSpeed;
-
-    float rotateSpeed;
-
-    Vector2 Movement;
-    #endregion
-
-
-
-    private void Awake()
+    private void Start()
     {
-        testingInputActions = new InputSystem_Actions();
-
-        rb = GetComponent<Rigidbody>();
+        controller = gameObject.GetComponent<CharacterController>();
     }
 
-    private void OnEnable()
-    {
-        testingInputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        testingInputActions.Disable();
-    }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
-       Movement = testingInputActions.Player.Move.ReadValue<Vector2>();
-
-       
-
-        Debug.Log(Movement);
-
-        if(testingInputActions.Player.Jump.triggered)
+        groundedPlayer = controller.isGrounded;
+        if (groundedPlayer && playerVelocity.y < 0)
         {
-            Debug.Log("Player has jumped");
+            playerVelocity.y = 0f;
         }
-    }
 
-    private void FixedUpdate()
-    {
-        rb.linearVelocity = Movement * movSpeed;
+        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        controller.Move(move * Time.deltaTime * playerSpeed);
+
+        if (move != Vector3.zero)
+        {
+            gameObject.transform.forward = move;
+        }
+
+        // Makes the player jump
+        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        {
+            playerVelocity.y += Mathf.Sqrt(jumpHeight * -2.0f * gravityValue);
+        }
+
+        playerVelocity.y += gravityValue * Time.deltaTime;
+        controller.Move(playerVelocity * Time.deltaTime);
     }
 }
