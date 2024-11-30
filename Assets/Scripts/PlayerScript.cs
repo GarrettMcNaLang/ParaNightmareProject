@@ -3,11 +3,27 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
 
+    #region Components
     private InputSystem_Actions testingInputActions;
+    Rigidbody rb;
+    #endregion
+
+    #region variables
+
+    public float movSpeed;
+
+    float rotateSpeed;
+
+    Vector2 Movement;
+    #endregion
+
+
 
     private void Awake()
     {
         testingInputActions = new InputSystem_Actions();
+
+        rb = GetComponent<Rigidbody>();
     }
 
     private void OnEnable()
@@ -28,13 +44,20 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       Vector2 Move = testingInputActions.Player.Move.ReadValue<Vector2>();
+       Movement = testingInputActions.Player.Move.ReadValue<Vector2>();
 
-        Debug.Log(Move);
+       
+
+        Debug.Log(Movement);
 
         if(testingInputActions.Player.Jump.triggered)
         {
             Debug.Log("Player has jumped");
         }
+    }
+
+    private void FixedUpdate()
+    {
+        rb.linearVelocity = Movement * movSpeed;
     }
 }
