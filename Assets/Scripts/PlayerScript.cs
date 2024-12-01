@@ -1,45 +1,91 @@
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerScript : MonoBehaviour
 {
+    #region Components
     private CharacterController controller;
-    private Vector3 playerVelocity;
-    private bool groundedPlayer;
+    private InputManager inputManager;
+    #endregion
+
+    #region Variables
+    private float verticalVelocity;
+    private float groundedTimer;
+    public bool groundedPlayer;
+
     [SerializeField]
-    private float playerSpeed = 2.0f;
+    private float playerSpeed;
     [SerializeField]
-    private float jumpHeight = 1.0f;
+    private float jumpHeight;
     [SerializeField]
-    private float gravityValue = -9.81f;
+    private float gravityValue;
+    #endregion
 
     private void Start()
     {
         controller = gameObject.GetComponent<CharacterController>();
+        inputManager = InputManager.Instance;
     }
 
     void Update()
     {
+
         groundedPlayer = controller.isGrounded;
-        if (groundedPlayer && playerVelocity.y < 0)
+
+
+        if (groundedPlayer)
         {
-            playerVelocity.y = 0f;
+            // cooldown interval to allow reliable jumping even whem coming down ramps
+            groundedTimer = 0.2f;
+        }
+        if (groundedTimer > 0)
+        {
+            groundedTimer -= Time.deltaTime;
         }
 
-        Vector3 move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        controller.Move(move * Time.deltaTime * playerSpeed);
+        if (groundedPlayer && verticalVelocity < 0)
+        {
+            // hit ground
+            verticalVelocity = 0f;
+        }
 
-        if (move != Vector3.zero)
+        // apply gravity always, to let us track down ramps properly
+        verticalVelocity -= gravityValue * Time.deltaTime;
+
+        //basic movement
+        Vector3 Movement = inputManager.PlayerMovement();
+        Vector3 move = new Vector3(Movement.x, 0f , Movement.z);
+
+        // scale by speed
+        move *= playerSpeed;
+
+        //Vector3 Movement = new Vector3(move.x, 0f, move.z);
+       // controller.Move(move * Time.deltaTime * playerSpeed);
+
+        if (move.magnitude > 0.05f)
         {
             gameObject.transform.forward = move;
         }
 
+        //jumping
         // Makes the player jump
-        if (Input.GetButtonDown("Jump") && groundedPlayer)
+        if (inputManager.JumpingFunction())
         {
-            playerVelocity.y += Mathf.Sqrt(jumpHeight * -2.0f * gravityValue);
+            // must have been grounded recently to allow jump
+            if (groundedTimer > 0)
+            {
+                // no more until we recontact ground
+                groundedTimer = 0;
+
+                // Physics dynamics formula for calculating jump up velocity based on height and gravity
+                verticalVelocity += Mathf.Sqrt(jumpHeight * 2 * gravityValue);
+            }
         }
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
+        //affects velocity
+        move.y = verticalVelocity;
+        controller.Move(move * Time.deltaTime);
     }
+
+   
 }

@@ -3,7 +3,14 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
+    private static InputManager _instance;
 
+    public static InputManager Instance
+    {
+        get { return _instance; }
+
+       
+    }
     
     private PlayerControls playerCtrls;
  
@@ -12,7 +19,13 @@ public class InputManager : MonoBehaviour
     {
         playerCtrls = new PlayerControls();
 
-       
+       if(_instance != null && _instance != this) {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
     }
 
     private void OnEnable()
