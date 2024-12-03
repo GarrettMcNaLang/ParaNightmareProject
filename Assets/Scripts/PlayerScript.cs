@@ -3,6 +3,11 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerScript : MonoBehaviour
 {
+    #region delegates
+
+   
+    #endregion
+
     #region Components
     private CharacterController controller;
     private InputManager inputManager;
@@ -25,6 +30,17 @@ public class PlayerScript : MonoBehaviour
     {
         controller = gameObject.GetComponent<CharacterController>();
         inputManager = InputManager.Instance;
+    }
+
+    private void OnEnable()
+    {
+
+        
+    }
+
+    void OnDisable()
+    {
+       
     }
 
     void Update()
@@ -85,6 +101,12 @@ public class PlayerScript : MonoBehaviour
         //affects velocity
         move.y = verticalVelocity;
         controller.Move(move * Time.deltaTime);
+
+
+        //if(inputManager.ShootingFunction())
+        //{
+        //    GM_Final.instance.Mouse1Event();
+        //}
     }
 
    
