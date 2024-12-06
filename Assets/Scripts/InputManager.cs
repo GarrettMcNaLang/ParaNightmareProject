@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour
 
     public bool ShootingFunction()
     {
-        return playerCtrls.Player.ShineOn.ReadValue<bool>();
+        return playerCtrls.Player.ShineOn.triggered;
     }
     // Update is called once per frame
   

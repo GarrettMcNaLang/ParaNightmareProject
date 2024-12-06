@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     #region Components
     private CharacterController controller;
     private InputManager inputManager;
+    private Transform CameraHead;
     #endregion
 
     #region Variables
@@ -26,10 +27,15 @@ public class PlayerScript : MonoBehaviour
     private float gravityValue;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         controller = gameObject.GetComponent<CharacterController>();
         inputManager = InputManager.Instance;
+        CameraHead = Camera.main.transform;
+    }
+    private void Start()
+    {
+        
     }
 
     private void OnEnable()
@@ -71,6 +77,8 @@ public class PlayerScript : MonoBehaviour
         //basic movement
         Vector3 Movement = inputManager.PlayerMovement();
         Vector3 move = new Vector3(Movement.x, 0f , Movement.z);
+        move.y = 0f;
+        move = CameraHead.transform.forward * move.z + CameraHead.transform.right * move.x;
 
         // scale by speed
         move *= playerSpeed;
@@ -78,10 +86,10 @@ public class PlayerScript : MonoBehaviour
         //Vector3 Movement = new Vector3(move.x, 0f, move.z);
        // controller.Move(move * Time.deltaTime * playerSpeed);
 
-        if (move.magnitude > 0.05f)
-        {
-            gameObject.transform.forward = move;
-        }
+        //if (move.magnitude > 0.05f)
+        //{
+        //    gameObject.transform.forward = move;
+        //}
 
         //jumping
         // Makes the player jump
@@ -103,11 +111,20 @@ public class PlayerScript : MonoBehaviour
         controller.Move(move * Time.deltaTime);
 
 
-        //if(inputManager.ShootingFunction())
-        //{
-        //    GM_Final.instance.Mouse1Event();
-        //}
+        if (inputManager.ShootingFunction())
+        {
+            GM_Final.Instance.Mouse1Event(true);
+        }
     }
 
-   
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.TryGetComponent<BatteryScript>(out BatteryScript battery)){
+            battery.ReturnBattery();
+        }
+
+
+
+    }
+
 }
