@@ -14,7 +14,16 @@ public class GM_Final : MonoBehaviour
         get { return currBatteries;} 
 
         set { currBatteries = Mathf.Clamp(value, 0, 3);
+            
+            if(currBatteries > 0) {
+            
+            }
+            
+            switch (currBatteries)
+            {
+                case 3:
 
+            }
 
              if(currBatteries == 0)
             {
