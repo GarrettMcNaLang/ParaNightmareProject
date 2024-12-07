@@ -15,19 +15,13 @@ public class GM_Final : MonoBehaviour
 
         set { currBatteries = Mathf.Clamp(value, 0, 3);
             
-            if(currBatteries > 0) {
-            
-            }
-            
-            switch (currBatteries)
-            {
-                case 3:
-
-            }
-
+                //Change graphic for batteries
              if(currBatteries == 0)
             {
                 playerCanShoot = false;
+            }
+            else if(currBatteries > 0) {
+                playerCanShoot = true;
             }
         }
     }
