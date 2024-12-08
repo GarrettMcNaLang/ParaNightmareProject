@@ -120,6 +120,7 @@ public class PlayerScript : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.TryGetComponent<BatteryScript>(out BatteryScript battery)){
+            GM_Final.Instance.CurrBatteries += 1;
             battery.ReturnBattery();
         }
 

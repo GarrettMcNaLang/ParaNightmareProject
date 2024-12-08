@@ -43,14 +43,27 @@ public class Mouse1Receiver : MonoBehaviour
 
     public void ShiningLight(bool IsClicked)
     {
-        isShining = IsClicked;
+        
         Debug.Log("Light GameObject Activated");
-        StartCoroutine(LightFlashEffect());
-        GM_Final.Instance.CurrBatteries -= 1;
+        if (GM_Final.Instance.playerCanShoot == false)
+        {
+            return;
+        }
+        else
+        {
+            isShining = IsClicked;
+            StartCoroutine(LightFlashEffect());
+            GM_Final.Instance.CurrBatteries -= 1;
+        }
+           
+        
         
     }
     IEnumerator LightFlashEffect()
     {
+       
+       
+
         AttackLight.intensity = 5f;
 
         while (AttackLight.intensity > 0f) {

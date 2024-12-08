@@ -14,15 +14,34 @@ public class GM_Final : MonoBehaviour
         get { return currBatteries;} 
 
         set { currBatteries = Mathf.Clamp(value, 0, 3);
-            
-                //Change graphic for batteries
-             if(currBatteries == 0)
+
+            if (currBatteries > 0)
             {
-                playerCanShoot = false;
-            }
-            else if(currBatteries > 0) {
                 playerCanShoot = true;
             }
+
+            switch (currBatteries)
+            {
+                case 3:
+                    {
+                        MenuManager.Instance.BatState = MenuManager.BatteryState.Green; break;
+                    }
+                case 2:
+                    {
+                        MenuManager.Instance.BatState = MenuManager.BatteryState.Yellow; break;
+                    }
+                case 1:
+                    {
+                        MenuManager.Instance.BatState = MenuManager.BatteryState.Red; break;
+                    }
+                case 0:
+                    {
+                        MenuManager.Instance.BatState = MenuManager.BatteryState.Empty;
+                        playerCanShoot = false;
+                        break;
+                    }
+            }
+              
         }
     }
 

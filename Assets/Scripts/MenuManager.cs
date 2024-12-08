@@ -2,24 +2,64 @@ using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
-    private static MenuManager instance;
+    public static MenuManager Instance;
 
-    public static MenuManager Instance
-    {
-        get { return instance; }
-    }
+   
 
     public GameObject BatGreen, BatYellow, BatRed;
 
+    public enum BatteryState
+    {
+        Green,
+        Yellow,
+        Red,
+        Empty
+    }
+
+    private BatteryState batState;
+
+    public BatteryState BatState
+    {
+        get { return batState; }
+
+        set { batState = value; 
+
+            BatGreen.SetActive(false);
+            BatYellow.SetActive(false);
+            BatRed.SetActive(false);
+
+            if(batState == BatteryState.Green)
+            {
+                BatGreen.SetActive(true);
+            }
+            else if(batState == BatteryState.Yellow)
+            {
+                BatYellow.SetActive(true);
+            }
+            else if (batState == BatteryState.Red)
+            { BatRed.SetActive(true);}
+            else if (batState == BatteryState.Empty)
+            {
+                BatGreen.SetActive(false);
+                BatYellow.SetActive(false);
+                BatRed.SetActive(false);
+            }
+        
+        }
+    }
+
+
+    
+
     void Awake()
     {
-        if (instance != null && instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
         }
         else
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
     }
