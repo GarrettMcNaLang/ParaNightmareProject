@@ -5,6 +5,7 @@ using UnityEngine.AI;
 public class EnemyScript : MonoBehaviour
 {
     public Transform Target;
+
     public NavMeshAgent Agent;
 
     public float DetectionFieldRadius;
@@ -26,6 +27,30 @@ public class EnemyScript : MonoBehaviour
 
     public LayerMask Obscuring;
 
+    public bool enemySpotted;
+
+    public bool AttackingEnemy;
+
+    private bool wasHit;
+
+    public bool WasHit
+    {
+        get { return wasHit; }
+
+        set { wasHit = value; 
+
+                CurrState = EnemyStates.Dead;
+            }
+    }
+
+    public float speed;
+
+    public ColliderComponent DetectionField;
+
+    public ColliderComponent AttackField;
+
+    public Vector3 PlayerPos;
+
     public enum EnemyStates
     {
         Idle,
@@ -44,25 +69,35 @@ public class EnemyScript : MonoBehaviour
            set { 
             if(value == currState) return;
 
-            switch (value)
+            switch (currState)
             {
                 case EnemyStates.Idle:
                     {
                         Debug.Log("Enemy is Idle");
+                        Idle();
                         break;
                     }
                 case EnemyStates.Spotted: {
                         Debug.Log("Player Spotted");
+                        Spotted();
                         break;
                     }
                 case EnemyStates.ChasingPlayer:
                     {
                         Debug.Log("Chasing Player");
+                        ChasingPlayer();
                         break;
                     }
                 case EnemyStates.AttackPlayer:
                     {
                         Debug.Log("Attacking Player");
+                        AttackPlayer();
+                        break;
+                    }
+                case EnemyStates.Dead:
+                    {
+                        Debug.Log("Enemy Dead");
+                        Dead();
                         break;
                     }
             }
@@ -72,11 +107,130 @@ public class EnemyScript : MonoBehaviour
         
             }
     }
+
+    void Awake()
+    {
+      
+
+    }
+
+    private void OnEnable()
+    {
+        DetectionField.TriggerEnter += OnDetectionFieldEnter;
+        DetectionField.TriggerExit += OnDetectionFieldExit;
+
+        AttackField.TriggerEnter += OnAttackFieldEnter;
+        AttackField.TriggerExit += OnAttackFieldExit;
+    }
+
+    private void OnDisable()
+    {
+        DetectionField.TriggerEnter -= OnDetectionFieldEnter;
+        DetectionField.TriggerExit -= OnDetectionFieldExit;
+
+        AttackField.TriggerEnter -= OnAttackFieldEnter;
+        AttackField.TriggerExit -= OnAttackFieldExit;
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
+
+        CurrState = EnemyStates.Idle;
     }
+
+    private void Idle()
+    {
+        Debug.Log("Idle State");
+        if (enemySpotted)
+        {
+            CurrState = EnemyStates.Spotted;
+        }
+    }
+
+    private void Spotted()
+    {
+        Debug.Log("Player Spotted");
+        if (enemySpotted)
+        {
+            CurrState = EnemyStates.ChasingPlayer;
+        }
+       
+    }
+
+    private void ChasingPlayer()
+    {
+        Debug.Log("Chasing Player");
+        Agent.destination = Target.position;
+
+        if (AttackingEnemy)
+        {
+
+            CurrState = EnemyStates.AttackPlayer;
+        }
+
+        if (!enemySpotted)
+        {
+            CurrState = EnemyStates.Idle;
+        }
+    }
+
+    private void AttackPlayer()
+    {
+        Agent.isStopped = true;
+
+        if (!AttackingEnemy)
+        {
+            CurrState = EnemyStates.ChasingPlayer;
+        }
+    }
+
+    private void Dead()
+    {
+        Debug.Log("Ghost is dead");
+    }
+
+    void OnDetectionFieldEnter(Collider other)
+    {
+        if(other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
+        {
+            enemySpotted = true;
+            Debug.Log("Player is sensed");
+        }
+       
+    }
+
+    void OnDetectionFieldExit(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
+        {
+            enemySpotted = false;
+            Debug.Log("Lost Player");
+        }
+            
+    }
+
+    void OnAttackFieldEnter(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
+        {
+            AttackingEnemy = true;
+            Debug.Log("Attacking Player");
+        }
+            
+    }
+
+    void OnAttackFieldExit(Collider other)
+    {
+        if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
+        {
+            AttackingEnemy = false;
+            Debug.Log("No Longer attacking players");
+        }
+            
+    }
+
+    
 
     //bool isTargetDetected()
     //{

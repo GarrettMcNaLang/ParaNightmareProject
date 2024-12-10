@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Mouse1Receiver : MonoBehaviour
 {
+    public ColliderComponent EnemyDetector;
+
 
     public Light AttackLight;
 
     #region variables
     public float lightDuration;
 
-    public float coneRadius;
-    public float coneDepth;
-    public float coneAngle;
+    //public float coneRadius;
+    //public float coneDepth;
+    //public float coneAngle;
 
     #endregion
 
-    private Physics physics;
+    //private Physics physics;
 
     #region CombatInfo
     public string EnemyTag;
@@ -33,12 +35,20 @@ public class Mouse1Receiver : MonoBehaviour
     {
         GM_Final.Instance.shootingEvent += ShiningLight;
 
+        EnemyDetector.TriggerEnter += OnEnemyDetectorTriggerEnter;
+
+        EnemyDetector.TriggerExit += OnEnemyDetectorTriggerExit;
+
         AttackLight.intensity = 0f;
     }
 
     private void OnDisable()
     {
         GM_Final.Instance.shootingEvent -= ShiningLight;
+
+        EnemyDetector.TriggerEnter -= OnEnemyDetectorTriggerEnter;
+
+        EnemyDetector.TriggerExit -= OnEnemyDetectorTriggerExit;
     }
 
     public void ShiningLight(bool IsClicked)
@@ -81,6 +91,29 @@ public class Mouse1Receiver : MonoBehaviour
         yield return 0;
     }
 
+    void OnEnemyDetectorTriggerEnter(Collider other)
+    {
+        Debug.Log("am I here?");
+        if(gameObject.TryGetComponent<EnemyScript>(out EnemyScript Enemy)){
+
+
+            Enemy.enemySpotted = true;
+            Debug.Log("sees enemy");
+
+            if (isShining && other.gameObject.CompareTag(EnemyTag))
+            {
+                Enemy.CurrState = EnemyScript.EnemyStates.Dead;
+                Debug.Log("EnemyDead");
+            }
+        }
+
+    }
+
+    void OnEnemyDetectorTriggerExit(Collider other)
+    {
+
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -95,20 +128,30 @@ public class Mouse1Receiver : MonoBehaviour
 
     void FixedUpdate()
     {
-        RaycastHit[] coneHits = physics.ConeCastAll(transform.position, transform.forward, coneRadius, coneDepth, coneAngle);
+        //    RaycastHit[] coneHits = physics.ConeCastAll(transform.position, transform.forward, coneRadius, coneDepth, coneAngle);
 
-        if(coneHits.Length > 0)
-        {
-            for(int i = 0; i < coneHits.Length; i++)
-            {
-                coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = Color.red;
-                if(isShining && coneHits[i].collider.gameObject.CompareTag(EnemyTag))
-                {
-                    Debug.Log("Enemy Spotted");
-                }
-            }
-        }
+        //    if(coneHits.Length > 0)
+        //    {
+        //        for(int i = 0; i < coneHits.Length; i++)
+        //        {
+        //            //coneHits[i].collider.gameObject.GetComponent<Renderer>().material.color = Color.red;
+
+        //            if(coneHits[i].collider.gameObject.TryGetComponent<EnemyScript>(out EnemyScript Enemy))
+        //            {
+        //                Enemy.enemySpotted = true;
+        //                Debug.Log("sees enemy");
+
+        //                if (isShining && coneHits[i].collider.gameObject.CompareTag(EnemyTag))
+        //                {
+        //                    Enemy.CurrState = EnemyScript.EnemyStates.Dead;
+        //                    Debug.Log("EnemyDead");
+        //                }
+        //            }
+
+
+        //        }
+        //    }
+        //}
+
     }
-
-    
 }
