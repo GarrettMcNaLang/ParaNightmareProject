@@ -67,6 +67,7 @@ public class GM_Final : MonoBehaviour
     public BatteryScript BatteryPrefab;
     public BatteryPoolScript BatteryPoolRef;
 
+    public EnemyScript EnemyPrefab;
     public EnemyPool EnemyPoolRef;
 
     #endregion
