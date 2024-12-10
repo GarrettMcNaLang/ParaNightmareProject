@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Pool;
 
-public class AttackScript : MonoBehaviour
+public class EnemyPool : MonoBehaviour
 {
+
+    public ObjectPool<EnemyScript> EnemyPool;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -13,6 +16,4 @@ public class AttackScript : MonoBehaviour
     {
         
     }
-
-
 }

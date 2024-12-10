@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Pool;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyScript : MonoBehaviour
 {
+
+    private ObjectPool<EnemyScript> Pool;
+
     public Transform Target;
 
     public NavMeshAgent Agent;
@@ -242,5 +246,16 @@ public class EnemyScript : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void ReturnEnemy()
+    {
+        Debug.Log("Enemy Returned");
+        Pool.Release(this);
+    }
+
+    public void SetPool(ObjectPool<EnemyScript> pool)
+    {
+        Pool = pool;
     }
 }

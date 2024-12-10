@@ -67,6 +67,8 @@ public class GM_Final : MonoBehaviour
     public BatteryScript BatteryPrefab;
     public BatteryPoolScript BatteryPoolRef;
 
+    public EnemyPool EnemyPoolRef;
+
     #endregion
 
     public static GM_Final Instance;
@@ -76,6 +78,8 @@ public class GM_Final : MonoBehaviour
     private List<BatterySpawnerScript> LvlOneBatteries = new List<BatterySpawnerScript>();
 
     private List<BatterySpawnerScript> LvlTwoBatteries = new List<BatterySpawnerScript>();
+
+    
     /// <summary>
     /// Shooting Function
     /// </summary>
