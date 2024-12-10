@@ -8,7 +8,7 @@ public class ColliderComponent : MonoBehaviour
     public event Action<Collider> TriggerExit;
 
 
-
+    
     void OnTriggerEnter(Collider other)
     {
         TriggerEnter?.Invoke(other);

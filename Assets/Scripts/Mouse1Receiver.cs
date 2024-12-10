@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Mouse1Receiver : MonoBehaviour
 {
+
     public ColliderComponent EnemyDetector;
 
 
@@ -94,7 +95,8 @@ public class Mouse1Receiver : MonoBehaviour
     void OnEnemyDetectorTriggerEnter(Collider other)
     {
         Debug.Log("am I here?");
-        if(gameObject.TryGetComponent<EnemyScript>(out EnemyScript Enemy)){
+        if(other.gameObject.TryGetComponent<EnemyScript>(out EnemyScript Enemy)){
+
 
 
             Enemy.enemySpotted = true;

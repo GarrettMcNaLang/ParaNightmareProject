@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
+using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyScript : MonoBehaviour
@@ -77,31 +78,31 @@ public class EnemyScript : MonoBehaviour
             {
                 case EnemyStates.Idle:
                     {
-                        Debug.Log("Enemy is Idle");
-                        Idle();
+                        //Debug.Log("Enemy is Idle");
+                        
                         break;
                     }
                 case EnemyStates.Spotted: {
-                        Debug.Log("Player Spotted");
-                        Spotted();
+                        //Debug.Log("Player Spotted");
+                        
                         break;
                     }
                 case EnemyStates.ChasingPlayer:
                     {
-                        Debug.Log("Chasing Player");
-                        ChasingPlayer();
+                        //Debug.Log("Chasing Player");
+                        
                         break;
                     }
                 case EnemyStates.AttackPlayer:
                     {
-                        Debug.Log("Attacking Player");
-                        AttackPlayer();
+                        //Debug.Log("Attacking Player");
+                        
                         break;
                     }
                 case EnemyStates.Dead:
                     {
                         Debug.Log("Enemy Dead");
-                        Dead();
+                        
                         break;
                     }
             }
@@ -125,6 +126,10 @@ public class EnemyScript : MonoBehaviour
 
         AttackField.TriggerEnter += OnAttackFieldEnter;
         AttackField.TriggerExit += OnAttackFieldExit;
+
+        CurrState = EnemyStates.Idle;
+
+        wasHit = false;
     }
 
     private void OnDisable()
@@ -140,7 +145,7 @@ public class EnemyScript : MonoBehaviour
     {
         Agent = GetComponent<NavMeshAgent>();
 
-        CurrState = EnemyStates.Idle;
+       
     }
 
     private void Idle()
@@ -192,6 +197,8 @@ public class EnemyScript : MonoBehaviour
     private void Dead()
     {
         Debug.Log("Ghost is dead");
+        Agent.isStopped = true;
+        
     }
 
     void OnDetectionFieldEnter(Collider other)
@@ -199,7 +206,7 @@ public class EnemyScript : MonoBehaviour
         if(other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             enemySpotted = true;
-            Debug.Log("Player is sensed");
+            //Debug.Log("Player is sensed");
         }
        
     }
@@ -209,7 +216,7 @@ public class EnemyScript : MonoBehaviour
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             enemySpotted = false;
-            Debug.Log("Lost Player");
+            //Debug.Log("Lost Player");
         }
             
     }
@@ -219,7 +226,7 @@ public class EnemyScript : MonoBehaviour
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             AttackingEnemy = true;
-            Debug.Log("Attacking Player");
+            //Debug.Log("Attacking Player");
         }
             
     }
@@ -229,7 +236,7 @@ public class EnemyScript : MonoBehaviour
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             AttackingEnemy = false;
-            Debug.Log("No Longer attacking players");
+            //Debug.Log("No Longer attacking players");
         }
             
     }
@@ -245,8 +252,47 @@ public class EnemyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        switch (CurrState)
+        {
+            case EnemyStates.Idle:
+                {
+                    //Debug.Log("Enemy is Idle");
+                    Idle();
+                    break;
+                }
+            case EnemyStates.Spotted:
+                {
+                    //Debug.Log("Player Spotted");
+                    Spotted();
+                    break;
+                }
+            case EnemyStates.ChasingPlayer:
+                {
+                    //Debug.Log("Chasing Player");
+                    ChasingPlayer();
+                    break;
+                }
+            case EnemyStates.AttackPlayer:
+                {
+                    //Debug.Log("Attacking Player");
+                    AttackPlayer();
+                    break;
+                }
+            case EnemyStates.Dead:
+                {
+                    Debug.Log("Enemy Dead");
+                    Dead();
+                    break;
+                }
+        }
+
+        if(WasHit == true)
+        {
+            CurrState = EnemyStates.Dead;
+        }
+
     }
+
 
     public void ReturnEnemy()
     {
@@ -259,3 +305,4 @@ public class EnemyScript : MonoBehaviour
         Pool = pool;
     }
 }
+
