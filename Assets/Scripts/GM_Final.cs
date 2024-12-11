@@ -58,6 +58,7 @@ public class GM_Final : MonoBehaviour
 
         set { currLevel = value;
 
+            Debug.Log(currLevel.ToString());
             LevelFunction(currLevel);
             
         }
@@ -80,6 +81,12 @@ public class GM_Final : MonoBehaviour
 
     private List<BatterySpawnerScript> LvlTwoBatteries = new List<BatterySpawnerScript>();
 
+    private EnemySpawner[] EnemySpawners;
+
+    private List<EnemySpawner> LvlOneEnemies = new List<EnemySpawner>();
+
+    private List<EnemySpawner> LvlTwoEnemies = new List<EnemySpawner>();
+
     
     /// <summary>
     /// Shooting Function
@@ -99,8 +106,11 @@ public class GM_Final : MonoBehaviour
 
         batterySpawners = GameObject.FindObjectsByType<BatterySpawnerScript>(FindObjectsSortMode.None);
 
+        EnemySpawners = GameObject.FindObjectsByType<EnemySpawner>(FindObjectsSortMode.None);
+
         CurrBatteries += 3;
-        
+
+       
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -120,9 +130,26 @@ public class GM_Final : MonoBehaviour
             }
         }
 
-        CurrLevel = Levels.Two;
+       for(int i = 0; i< EnemySpawners.Length; i++)
+        {
+            if (EnemySpawners[i].gameObject.CompareTag("Level1Objs"))
+            {
+                LvlOneEnemies.Add(EnemySpawners[i]);
+            }
+            else if (EnemySpawners[i].gameObject.CompareTag("Level2Objs"))
+            {
+                LvlTwoEnemies.Add(EnemySpawners[i]);
+            }
+        }
+
+        
         Debug.Log("Level One Batteries: " + LvlOneBatteries.Count);
         Debug.Log("Level Two Batteries: " + LvlTwoBatteries.Count);
+
+        Debug.Log("Level One Enemies: " + LvlOneEnemies.Count);
+        Debug.Log("Level Two Enemies: " + LvlTwoEnemies.Count);
+
+        CurrLevel = Levels.One;
     }
 
     public void LevelFunction(Levels level)
@@ -137,6 +164,12 @@ public class GM_Final : MonoBehaviour
                         LvlOneBatteries[i].SpawnBattery();
                         
                     }
+
+                    for(int i = 0; i < LvlOneEnemies.Count; i++)
+                    {
+                        Debug.Log("Level 1 Enemeis Spawning");
+                        LvlOneEnemies[i].SpawnEnemy();
+                    }
                     break;
                 }
             case Levels.Two:
@@ -146,6 +179,12 @@ public class GM_Final : MonoBehaviour
                         Debug.Log("Level 2 Batteries Spawning");
                         LvlTwoBatteries[i].SpawnBattery();
                         
+                    }
+
+                    for (int i = 0; i < LvlTwoEnemies.Count; i++)
+                    {
+                        Debug.Log("Level 2 Enemies Spawning");
+                        LvlTwoEnemies[i].SpawnEnemy();
                     }
                     break;
                 }

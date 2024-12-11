@@ -115,7 +115,9 @@ public class EnemyScript : MonoBehaviour
 
     void Awake()
     {
-      
+        Target = GameObject.Find("Player").transform;
+
+        Agent = GetComponent<NavMeshAgent>();   
 
     }
 
@@ -130,6 +132,8 @@ public class EnemyScript : MonoBehaviour
         CurrState = EnemyStates.Idle;
 
         wasHit = false;
+
+       
     }
 
     private void OnDisable()
@@ -139,13 +143,14 @@ public class EnemyScript : MonoBehaviour
 
         AttackField.TriggerEnter -= OnAttackFieldEnter;
         AttackField.TriggerExit -= OnAttackFieldExit;
+       // Agent.enabled = false;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Agent = GetComponent<NavMeshAgent>();
 
-       
+        
     }
 
     private void Idle()

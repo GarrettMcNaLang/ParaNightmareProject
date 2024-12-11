@@ -21,6 +21,7 @@ public class EnemyPool : MonoBehaviour
     {
         EnemyScript enemyScript = Instantiate(GM_Final.Instance.EnemyPrefab, gameObject.transform.position, Quaternion.identity);
 
+        Debug.Log("EnemyPrefab Created");
         enemyScript.SetPool(EnemyPoolObj);
 
         return enemyScript;
@@ -28,11 +29,13 @@ public class EnemyPool : MonoBehaviour
 
     private void OnRetrieve(EnemyScript Enemy)
     {
+        Debug.Log("EnemyRetrieved");
         Enemy.gameObject.SetActive(true);
     }
 
     private void OnReturn(EnemyScript Enemy)
     {
+        Debug.Log("EnemyReturned");
         Enemy.gameObject.SetActive(false);
     }
 
