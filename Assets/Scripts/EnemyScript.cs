@@ -36,17 +36,10 @@ public class EnemyScript : MonoBehaviour
 
     public bool AttackingEnemy;
 
-    private bool wasHit;
 
-    public bool WasHit
-    {
-        get { return wasHit; }
 
-        set { wasHit = value; 
-
-                CurrState = EnemyStates.Dead;
-            }
-    }
+    public bool WasHit;
+    
 
     public float speed;
 
@@ -131,9 +124,9 @@ public class EnemyScript : MonoBehaviour
 
         CurrState = EnemyStates.Idle;
 
-        wasHit = false;
+        WasHit = false;
 
-       
+        Debug.Log(Agent.enabled == false ? "disabled" : "enabled");
     }
 
     private void OnDisable()

@@ -22,17 +22,19 @@ public class EnemySpawner : MonoBehaviour
 
         obj.transform.position = Vector3.zero + this.transform.position;
 
-        NavMeshTriangulation Triangulation = NavMesh.CalculateTriangulation();
+        obj.Agent.Warp(this.transform.position);
 
-        NavMeshHit Hit;
+        obj.Agent.enabled = true;
 
-        if (NavMesh.SamplePosition(this.transform.position, out Hit, 2f, 0))
-        {
-            obj.Agent.Warp(this.transform.position);
+        //NavMeshTriangulation Triangulation = NavMesh.CalculateTriangulation();
 
-            obj.Agent.enabled = true;
+        //NavMeshHit Hit;
 
-            //Debug.Log(obj.Agent.enabled == false ? "disabled" :  "enabled");
-        }
+        //if (NavMesh.SamplePosition(this.transform.position, out Hit, 2f, 0))
+        //{
+            
+
+            
+        //}
     }
 }

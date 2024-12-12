@@ -7,6 +7,8 @@ public class Mouse1Receiver : MonoBehaviour
 
     public ColliderComponent EnemyDetector;
 
+    //public ColliderComponent DeathCone;
+
 
     public Light AttackLight;
 
@@ -40,6 +42,12 @@ public class Mouse1Receiver : MonoBehaviour
 
         EnemyDetector.TriggerExit += OnEnemyDetectorTriggerExit;
 
+        EnemyDetector.TriggerStay += OnEnemyTriggerStay;
+
+        //DeathCone.TriggerEnter += OnDeathConeTriggerEnter;
+
+        //DeathCone.TriggerExit += OnDeathConeTriggerExit;
+
         AttackLight.intensity = 0f;
     }
 
@@ -50,6 +58,12 @@ public class Mouse1Receiver : MonoBehaviour
         EnemyDetector.TriggerEnter -= OnEnemyDetectorTriggerEnter;
 
         EnemyDetector.TriggerExit -= OnEnemyDetectorTriggerExit;
+
+        EnemyDetector.TriggerStay -= OnEnemyTriggerStay;
+
+        //DeathCone.TriggerEnter -= OnDeathConeTriggerEnter;
+
+        //DeathCone.TriggerExit -= OnDeathConeTriggerExit;
     }
 
     public void ShiningLight(bool IsClicked)
@@ -102,19 +116,34 @@ public class Mouse1Receiver : MonoBehaviour
             Enemy.enemySpotted = true;
             Debug.Log("sees enemy");
 
-            if (isShining && other.gameObject.CompareTag(EnemyTag))
-            {
-                Enemy.CurrState = EnemyScript.EnemyStates.Dead;
-                Debug.Log("EnemyDead");
-            }
+            
         }
 
     }
 
+    void OnEnemyTriggerStay(Collider other)
+    {
+        Debug.Log("am I here?");
+        if (other.gameObject.TryGetComponent<EnemyScript>(out EnemyScript Enemy))
+        {
+
+
+
+
+            if (isShining && Enemy.enemySpotted == true)
+            {
+                Enemy.WasHit = true;
+                Debug.Log("EnemyDead");
+            }
+        }
+    }
     void OnEnemyDetectorTriggerExit(Collider other)
     {
 
     }
+
+
+   
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
