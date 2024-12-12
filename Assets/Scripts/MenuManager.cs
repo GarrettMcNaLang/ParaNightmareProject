@@ -1,7 +1,15 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class MenuManager : MonoBehaviour
 {
+
+    public GameObject VictoryScreen;
+
+    public GameObject GameOverScreen;
+
+    //public GameObject 
+
     public static MenuManager Instance;
 
    
@@ -64,6 +72,41 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void ActivatePanel(GameObject panel)
+    {
+        panel.SetActive(true);
+    }
+
+    public void DeactivatePanel(GameObject panel)
+    {
+        panel.SetActive(false);
+    }
+
+    public void StartGame()
+    {
+        GM_Final.Instance.GameStarted = true;
+    }
+
+    public void StopGame()
+    {
+        GM_Final.Instance.GameStarted = false;
+    }
+
+    public void GameOver()
+    {
+        StopGame();
+    }
+
+    public void Victory()
+    {
+        StopGame();
+    }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

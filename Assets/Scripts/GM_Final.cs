@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class GM_Final : MonoBehaviour
 {
+
+    public bool GameStarted;
+
+
     public bool playerCanShoot;
 
     private float currBatteries;
@@ -42,6 +46,19 @@ public class GM_Final : MonoBehaviour
                     }
             }
               
+        }
+    }
+
+    private float enemyCount;
+
+    public float EnemyCount
+    {
+        get { return enemyCount; }
+
+        set { enemyCount = value;
+
+            if (enemyCount <= 0)
+                MenuManager.Instance.GameOver();
         }
     }
 
@@ -109,6 +126,8 @@ public class GM_Final : MonoBehaviour
         EnemySpawners = GameObject.FindObjectsByType<EnemySpawner>(FindObjectsSortMode.None);
 
         CurrBatteries += 3;
+
+        GameStarted = false;
 
        
     }
@@ -216,6 +235,9 @@ public class GM_Final : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(GameStarted == false)
+        {
+            Time.timeScale = 0.0f;
+        }
     }
 }
