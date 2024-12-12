@@ -70,7 +70,7 @@ public class Mouse1Receiver : MonoBehaviour
     {
         
         Debug.Log("Light GameObject Activated");
-        if (GM_Final.Instance.playerCanShoot == false)
+        if (GM_Final.Instance.playerCanShoot == false || GM_Final.Instance.GameStarted == false)
         {
             return;
         }

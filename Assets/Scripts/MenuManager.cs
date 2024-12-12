@@ -8,6 +8,12 @@ public class MenuManager : MonoBehaviour
 
     public GameObject GameOverScreen;
 
+    public GameObject PauseScreen;
+
+    public GameObject MainUI;
+
+    
+
     //public GameObject 
 
     public static MenuManager Instance;
@@ -101,23 +107,40 @@ public class MenuManager : MonoBehaviour
     public void GameOver()
     {
         StopGame();
+
+        ActivatePanel(GameOverScreen);
+        DeactivatePanel(MainUI);
     }
 
     public void Victory()
     {
         StopGame();
+
+        ActivatePanel(VictoryScreen);
+        DeactivatePanel(MainUI);
+    }
+
+    public void Pause()
+    {
+        StopGame();
+
+        ActivatePanel(PauseScreen);
+        DeactivatePanel(MainUI);
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        GM_Final.Instance.GameStarted = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if(Input.GetKey(KeyCode.Escape))
+        {
+            Pause();
+        }
     }
 }

@@ -62,6 +62,21 @@ public class GM_Final : MonoBehaviour
         }
     }
 
+
+    private float playerLives;
+
+    public float PlayerLives
+    {
+        get { return playerLives; }
+
+        set { playerLives = value;
+
+
+            if (playerLives <= 0)
+                MenuManager.Instance.GameOver();
+        }
+    }
+
     public enum Levels
     {
         One,
@@ -127,7 +142,7 @@ public class GM_Final : MonoBehaviour
 
         CurrBatteries += 3;
 
-        GameStarted = false;
+        
 
        
     }
@@ -189,6 +204,9 @@ public class GM_Final : MonoBehaviour
                         Debug.Log("Level 1 Enemeis Spawning");
                         LvlOneEnemies[i].SpawnEnemy();
                     }
+
+
+                    SpawnPlayerFunction();
                     break;
                 }
             case Levels.Two:
@@ -230,7 +248,37 @@ public class GM_Final : MonoBehaviour
         shootingEvent(IsClicked);
         
     }
+
+    public delegate void SpawnPlayer();
+
+    public event SpawnPlayer spawnPlayerEvent;
+
+    public void SpawnPlayerFunction()
+    {
+        spawnPlayerEvent();
+    }
    
+    public void ResetLevel()
+    {
+        
+                    BatteryScript[] batteryObjs = GameObject.FindObjectsByType<BatteryScript>(FindObjectsSortMode.None);
+                    EnemyScript[] EnemyObjs = GameObject.FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
+
+                    for(int i = 0; i < batteryObjs.Length; i++)
+                    {
+                        batteryObjs[i].ReturnBattery();
+                    }
+
+                    for (int i = 0; i < LvlOneEnemies.Count; i++)
+                    {
+                        Debug.Log("Level 1 Enemeis Spawning");
+                        EnemyObjs[i].ReturnEnemy();
+                    }
+
+
+                    SpawnPlayerFunction();
+                   
+    }
 
     // Update is called once per frame
     void Update()
@@ -238,6 +286,10 @@ public class GM_Final : MonoBehaviour
         if(GameStarted == false)
         {
             Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
         }
     }
 }

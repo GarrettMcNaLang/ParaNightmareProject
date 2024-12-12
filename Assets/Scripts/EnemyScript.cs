@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Pool;
@@ -24,13 +25,9 @@ public class EnemyScript : MonoBehaviour
     private float idleWaitTimeCounter = 0;
 
     //how long between each attack
-    public float combatCooldown;
+    public float combatCooldown = 2f;
     //the counter that keeps track since the last attack
     private float combatCooldownCounter = 0;
-
-    public float visionRange;
-
-    public LayerMask Obscuring;
 
     public bool enemySpotted;
 
@@ -112,6 +109,8 @@ public class EnemyScript : MonoBehaviour
 
         Agent = GetComponent<NavMeshAgent>();   
 
+
+
     }
 
     private void OnEnable()
@@ -125,6 +124,8 @@ public class EnemyScript : MonoBehaviour
         CurrState = EnemyStates.Idle;
 
         WasHit = false;
+
+        GM_Final.Instance.EnemyCount += 1;
 
         Debug.Log(Agent.enabled == false ? "disabled" : "enabled");
     }
@@ -196,6 +197,8 @@ public class EnemyScript : MonoBehaviour
     {
         Debug.Log("Ghost is dead");
         Agent.isStopped = true;
+
+
         
     }
 
@@ -224,16 +227,26 @@ public class EnemyScript : MonoBehaviour
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             AttackingEnemy = true;
+            GM_Final.Instance.PlayerLives -= 1;
             //Debug.Log("Attacking Player");
         }
             
     }
+
+    //IEnumerator AttackCooldown()
+    //{
+    //    combatCooldownCounter += Time.deltaTime;
+
+
+    //}
 
     void OnAttackFieldExit(Collider other)
     {
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             AttackingEnemy = false;
+            ReturnEnemy();
+            GM_Final.Instance.EnemyCount -= 1;
             //Debug.Log("No Longer attacking players");
         }
             
