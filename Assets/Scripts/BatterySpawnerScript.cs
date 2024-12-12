@@ -15,6 +15,10 @@ public class BatterySpawnerScript : MonoBehaviour
         
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     public void SpawnBattery()
     {
         Debug.Log("Spawning Battery");

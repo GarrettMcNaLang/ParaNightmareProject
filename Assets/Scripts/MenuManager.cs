@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuManager : MonoBehaviour
 {
@@ -110,6 +111,11 @@ public class MenuManager : MonoBehaviour
 
         ActivatePanel(GameOverScreen);
         DeactivatePanel(MainUI);
+    }
+
+    public void ResetScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void Victory()

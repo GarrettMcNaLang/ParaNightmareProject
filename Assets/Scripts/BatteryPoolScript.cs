@@ -4,7 +4,10 @@ using UnityEngine.Pool;
 
 public class BatteryPoolScript : MonoBehaviour
 {
-
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     private void OnEnable()
     {
 

@@ -14,13 +14,18 @@ public class ExitScript : MonoBehaviour
         
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             if(GM_Final.Instance.EnemyCount >= 0)
             {
-                MenuManager.Instance.GameOver();
+                MenuManager.Instance.Victory();
             }
            
         }

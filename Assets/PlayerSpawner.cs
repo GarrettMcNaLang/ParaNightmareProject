@@ -14,6 +14,11 @@ public class PlayerSpawner : MonoBehaviour
     {
         GM_Final.Instance.spawnPlayerEvent -= SetUpPlayer;
     }
+
+    private void Awake()
+    {
+        
+    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,8 +33,8 @@ public class PlayerSpawner : MonoBehaviour
 
     public void SetUpPlayer()
     {
-       
 
+        Debug.Log("Should have moved player");
         PlayerObj.transform.position = this.transform.position;
     }
 }

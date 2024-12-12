@@ -3,7 +3,10 @@ using UnityEngine.Pool;
 
 public class EnemyPool : MonoBehaviour
 {
-
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     public ObjectPool<EnemyScript> EnemyPoolObj;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -13,6 +13,8 @@ public class GM_Final : MonoBehaviour
 
     private float currBatteries;
 
+  
+
     public float CurrBatteries { 
 
         get { return currBatteries;} 
@@ -57,8 +59,7 @@ public class GM_Final : MonoBehaviour
 
         set { enemyCount = value;
 
-            if (enemyCount <= 0)
-                MenuManager.Instance.GameOver();
+           
         }
     }
 
@@ -91,7 +92,8 @@ public class GM_Final : MonoBehaviour
         set { currLevel = value;
 
             Debug.Log(currLevel.ToString());
-            LevelFunction(currLevel);
+            
+            
             
         }
     }
@@ -128,12 +130,13 @@ public class GM_Final : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(Instance);
+           
         }
         else
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+             Instance = this;
+            //DontDestroyOnLoad(gameObject);
         }
 
         batterySpawners = GameObject.FindObjectsByType<BatterySpawnerScript>(FindObjectsSortMode.None);
@@ -184,6 +187,23 @@ public class GM_Final : MonoBehaviour
         Debug.Log("Level Two Enemies: " + LvlTwoEnemies.Count);
 
         CurrLevel = Levels.One;
+    }
+
+    public void LevelDecider(string level)
+    {
+       
+
+
+        if(level == Levels.One.ToString())
+        {
+            LevelFunction(Levels.One);
+        }
+        else if(level == Levels.Two.ToString())
+        {
+            LevelFunction(Levels.Two);
+        }
+
+       
     }
 
     public void LevelFunction(Levels level)
@@ -255,6 +275,7 @@ public class GM_Final : MonoBehaviour
 
     public void SpawnPlayerFunction()
     {
+        Debug.Log("InSpawnPlayerFunction");
         spawnPlayerEvent();
     }
    
@@ -266,12 +287,13 @@ public class GM_Final : MonoBehaviour
 
                     for(int i = 0; i < batteryObjs.Length; i++)
                     {
+                        Debug.Log("Batteries returned");
                         batteryObjs[i].ReturnBattery();
                     }
 
                     for (int i = 0; i < LvlOneEnemies.Count; i++)
                     {
-                        Debug.Log("Level 1 Enemeis Spawning");
+                        Debug.Log("Returning Enemies");
                         EnemyObjs[i].ReturnEnemy();
                     }
 

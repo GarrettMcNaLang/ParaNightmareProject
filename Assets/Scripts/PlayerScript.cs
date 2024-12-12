@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerScript : MonoBehaviour
 {
+
+    public static PlayerScript instance;
     #region delegates
 
    
@@ -32,6 +34,16 @@ public class PlayerScript : MonoBehaviour
         controller = gameObject.GetComponent<CharacterController>();
         inputManager = InputManager.Instance;
         CameraHead = Camera.main.transform;
+
+        if (instance == null)
+            instance = this;
+        else if (instance != null)
+            Destroy(this.gameObject);
+
+
+        //DontDestroyOnLoad(instance);
+
+        
     }
     private void Start()
     {

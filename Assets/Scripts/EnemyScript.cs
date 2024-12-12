@@ -29,6 +29,8 @@ public class EnemyScript : MonoBehaviour
     //the counter that keeps track since the last attack
     private float combatCooldownCounter = 0;
 
+    private bool coolingDown;
+
     public bool enemySpotted;
 
     public bool AttackingEnemy;
@@ -125,6 +127,8 @@ public class EnemyScript : MonoBehaviour
 
         WasHit = false;
 
+        coolingDown = false;
+
         GM_Final.Instance.EnemyCount += 1;
 
         Debug.Log(Agent.enabled == false ? "disabled" : "enabled");
@@ -198,7 +202,7 @@ public class EnemyScript : MonoBehaviour
         Debug.Log("Ghost is dead");
         Agent.isStopped = true;
 
-
+        ReturnEnemy();
         
     }
 
@@ -226,27 +230,50 @@ public class EnemyScript : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
+            
+
             AttackingEnemy = true;
-            GM_Final.Instance.PlayerLives -= 1;
+
+            //GM_Final.Instance.
+           
+            StartCoroutine(AttackCooldown());
             //Debug.Log("Attacking Player");
         }
             
     }
 
-    //IEnumerator AttackCooldown()
-    //{
-    //    combatCooldownCounter += Time.deltaTime;
+    IEnumerator AttackCooldown()
+    {
+        
 
+        while (AttackingEnemy)
+        {
+            if (!coolingDown)
+            {
+                GM_Final.Instance.PlayerLives -= 1;
+                coolingDown = true;
+                combatCooldownCounter += Time.deltaTime;
+               
+            }
 
-    //}
+            if(combatCooldownCounter >= combatCooldown)
+            {
+                coolingDown = false;
+                combatCooldownCounter = 0;
+            }
+             yield return null;
+        }
+
+        yield return 0;
+    }
 
     void OnAttackFieldExit(Collider other)
     {
         if (other.gameObject.TryGetComponent<PlayerScript>(out PlayerScript player))
         {
             AttackingEnemy = false;
-            ReturnEnemy();
-            GM_Final.Instance.EnemyCount -= 1;
+            
+            
             //Debug.Log("No Longer attacking players");
         }
             

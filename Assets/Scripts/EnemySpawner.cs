@@ -15,6 +15,11 @@ public class EnemySpawner : MonoBehaviour
         
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this);
+    }
+
     public void SpawnEnemy()
     {
         Debug.Log("Spawning Obj");
