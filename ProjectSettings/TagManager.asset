@@ -9,6 +9,7 @@ TagManager:
   - PlayerCollider
   - batteries
   - Ghost
+  - LightPrefab
   layers:
   - Default
   - TransparentFX

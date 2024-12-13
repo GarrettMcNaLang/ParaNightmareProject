@@ -13,6 +13,8 @@ public class GM_Final : MonoBehaviour
 
     private float currBatteries;
 
+
+    public float EnvironLightIntensity;
   
 
     public float CurrBatteries { 
@@ -59,7 +61,10 @@ public class GM_Final : MonoBehaviour
 
         set { enemyCount = value;
 
-           
+            if (enemyCount <= 0)
+            {
+                LevelEndedFunction();
+            }
         }
     }
 
@@ -72,9 +77,19 @@ public class GM_Final : MonoBehaviour
 
         set { playerLives = value;
 
+            if (playerLives == 3)
+                MenuManager.Instance.CurrLivesState = MenuManager.LivesState.Three;
+            else if (playerLives == 2)
+                MenuManager.Instance.CurrLivesState = MenuManager.LivesState.Two;
+            else if (playerLives == 1)
+                MenuManager.Instance.CurrLivesState = MenuManager.LivesState.One;
 
             if (playerLives <= 0)
+            {
+                MenuManager.Instance.CurrLivesState = MenuManager.LivesState.Zero;
                 MenuManager.Instance.GameOver();
+            }
+                
         }
     }
 
@@ -121,7 +136,10 @@ public class GM_Final : MonoBehaviour
 
     private List<EnemySpawner> LvlTwoEnemies = new List<EnemySpawner>();
 
-    
+    private GameObject[] LightsObjs;
+
+    private List<Light> Lights = new List<Light>();
+
     /// <summary>
     /// Shooting Function
     /// </summary>
@@ -143,9 +161,13 @@ public class GM_Final : MonoBehaviour
 
         EnemySpawners = GameObject.FindObjectsByType<EnemySpawner>(FindObjectsSortMode.None);
 
-        CurrBatteries += 3;
+        LightsObjs = GameObject.FindGameObjectsWithTag("LightPrefab");
 
         
+
+        CurrBatteries += 3;
+
+        PlayerLives += 3;
 
        
     }
@@ -179,7 +201,19 @@ public class GM_Final : MonoBehaviour
             }
         }
 
-        
+       for(int i = 0; i < LightsObjs.Length; i++)
+        {
+            var light = LightsObjs[i].GetComponent<Light>();
+
+            Lights.Add(light);
+        }
+
+        for (int i = 0; i < Lights.Count; i++)
+        {
+            Lights[i].intensity = 0f;
+        }
+
+
         Debug.Log("Level One Batteries: " + LvlOneBatteries.Count);
         Debug.Log("Level Two Batteries: " + LvlTwoBatteries.Count);
 
@@ -187,6 +221,8 @@ public class GM_Final : MonoBehaviour
         Debug.Log("Level Two Enemies: " + LvlTwoEnemies.Count);
 
         CurrLevel = Levels.One;
+
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     public void LevelDecider(string level)
@@ -196,10 +232,12 @@ public class GM_Final : MonoBehaviour
 
         if(level == Levels.One.ToString())
         {
+            Debug.Log("Loading Scene 1");
             LevelFunction(Levels.One);
         }
         else if(level == Levels.Two.ToString())
         {
+            Debug.Log("Loading Scene 2");
             LevelFunction(Levels.Two);
         }
 
@@ -225,6 +263,8 @@ public class GM_Final : MonoBehaviour
                         LvlOneEnemies[i].SpawnEnemy();
                     }
 
+                   
+                    
 
                     SpawnPlayerFunction();
                     break;
@@ -252,6 +292,13 @@ public class GM_Final : MonoBehaviour
 
     public event ShootingEvent shootingEvent;
 
+    public void LevelEndedFunction()
+    {
+        foreach (Light obj in Lights)
+        {
+            obj.intensity = EnvironLightIntensity;
+        }
+    }
     public void OnEnable()
     {
         
@@ -276,31 +323,10 @@ public class GM_Final : MonoBehaviour
     public void SpawnPlayerFunction()
     {
         Debug.Log("InSpawnPlayerFunction");
-        spawnPlayerEvent();
+        //spawnPlayerEvent();
     }
    
-    public void ResetLevel()
-    {
-        
-                    BatteryScript[] batteryObjs = GameObject.FindObjectsByType<BatteryScript>(FindObjectsSortMode.None);
-                    EnemyScript[] EnemyObjs = GameObject.FindObjectsByType<EnemyScript>(FindObjectsSortMode.None);
-
-                    for(int i = 0; i < batteryObjs.Length; i++)
-                    {
-                        Debug.Log("Batteries returned");
-                        batteryObjs[i].ReturnBattery();
-                    }
-
-                    for (int i = 0; i < LvlOneEnemies.Count; i++)
-                    {
-                        Debug.Log("Returning Enemies");
-                        EnemyObjs[i].ReturnEnemy();
-                    }
-
-
-                    SpawnPlayerFunction();
-                   
-    }
+    
 
     // Update is called once per frame
     void Update()
@@ -313,5 +339,8 @@ public class GM_Final : MonoBehaviour
         {
             Time.timeScale = 1.0f;
         }
+
+
+
     }
 }

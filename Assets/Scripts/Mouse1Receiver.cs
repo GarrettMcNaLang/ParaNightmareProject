@@ -5,6 +5,12 @@ using UnityEngine;
 public class Mouse1Receiver : MonoBehaviour
 {
 
+    public AudioSource Mouse1Click;
+
+    public AudioSource AttackSound;
+
+    public AudioSource NoBatterySound;
+
     public ColliderComponent EnemyDetector;
 
     //public ColliderComponent DeathCone;
@@ -72,11 +78,13 @@ public class Mouse1Receiver : MonoBehaviour
         Debug.Log("Light GameObject Activated");
         if (GM_Final.Instance.playerCanShoot == false || GM_Final.Instance.GameStarted == false)
         {
+            NoBatterySound.Play();
             return;
         }
         else
         {
             isShining = IsClicked;
+            Mouse1Click.Play();
             StartCoroutine(LightFlashEffect());
             GM_Final.Instance.CurrBatteries -= 1;
         }
@@ -87,9 +95,9 @@ public class Mouse1Receiver : MonoBehaviour
     IEnumerator LightFlashEffect()
     {
        
-       
+       AttackSound.Play();  
 
-        AttackLight.intensity = 5f;
+        AttackLight.intensity = 10f;
 
         while (AttackLight.intensity > 0f) {
             AttackLight.intensity -= Time.deltaTime * lightDuration;

@@ -23,6 +23,8 @@ public class MenuManager : MonoBehaviour
 
     public GameObject BatGreen, BatYellow, BatRed;
 
+    public GameObject LifeThree, LifeTwo, LifeOne;
+
     public enum BatteryState
     {
         Green,
@@ -63,6 +65,55 @@ public class MenuManager : MonoBehaviour
         }
     }
 
+    public enum LivesState
+    {
+        Three,
+        Two,
+        One,
+        Zero
+    }
+
+    private LivesState livesState;
+
+    public LivesState CurrLivesState
+    {
+        get { return livesState; }
+
+        set
+        {
+            livesState = value;
+
+            
+
+            if(livesState == LivesState.Three)
+            {
+                LifeThree.SetActive(true);
+                LifeTwo.SetActive(true);
+                LifeOne.SetActive(true);
+            }
+            else if(livesState == LivesState.Two) {
+
+                LifeThree.SetActive(false);
+                LifeTwo.SetActive(true);
+                LifeOne.SetActive(true);
+
+            }
+            
+            else if(livesState == LivesState.One)
+            {
+                LifeThree.SetActive(false);
+                LifeTwo.SetActive(false);
+                LifeOne.SetActive(true);
+            }
+
+            else if(livesState == LivesState.Zero)
+            {
+                LifeThree.SetActive(false);
+                LifeTwo.SetActive(false);
+                LifeOne.SetActive(false);
+            }
+        }
+    }
 
     
 
@@ -75,7 +126,7 @@ public class MenuManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
         }
     }
 

@@ -8,6 +8,10 @@ using static UnityEngine.Rendering.DebugUI;
 public class EnemyScript : MonoBehaviour
 {
 
+    public GameObject IdleFace;
+
+    public GameObject ChasingFace;
+
     private ObjectPool<EnemyScript> Pool;
 
     public Transform Target;
@@ -29,7 +33,7 @@ public class EnemyScript : MonoBehaviour
     //the counter that keeps track since the last attack
     private float combatCooldownCounter = 0;
 
-    private bool coolingDown;
+    private bool coolingDown = false;
 
     public bool enemySpotted;
 
@@ -154,8 +158,12 @@ public class EnemyScript : MonoBehaviour
     private void Idle()
     {
         Debug.Log("Idle State");
+
+        IdleFace.SetActive(true);
+
         if (enemySpotted)
         {
+            IdleFace.SetActive(false);
             CurrState = EnemyStates.Spotted;
         }
     }
@@ -163,6 +171,9 @@ public class EnemyScript : MonoBehaviour
     private void Spotted()
     {
         Debug.Log("Player Spotted");
+
+        ChasingFace.SetActive(true);
+
         if (enemySpotted)
         {
             CurrState = EnemyStates.ChasingPlayer;
@@ -191,10 +202,16 @@ public class EnemyScript : MonoBehaviour
     {
         Agent.isStopped = true;
 
-        if (!AttackingEnemy)
+        if (!AttackingEnemy && enemySpotted)
         {
             CurrState = EnemyStates.ChasingPlayer;
         }
+
+        //combatCooldownCounter += Time.deltaTime
+
+        //Cool
+
+        
     }
 
     private void Dead()
@@ -202,6 +219,7 @@ public class EnemyScript : MonoBehaviour
         Debug.Log("Ghost is dead");
         Agent.isStopped = true;
 
+        GM_Final.Instance.EnemyCount -= 1;
         ReturnEnemy();
         
     }
@@ -235,9 +253,15 @@ public class EnemyScript : MonoBehaviour
             AttackingEnemy = true;
 
             //GM_Final.Instance.
-           
+
             StartCoroutine(AttackCooldown());
-            //Debug.Log("Attacking Player");
+
+            if (!AttackingEnemy)
+            {
+                StopCoroutine(AttackCooldown());
+                
+            }
+            
         }
             
     }
@@ -250,16 +274,20 @@ public class EnemyScript : MonoBehaviour
         {
             if (!coolingDown)
             {
+                Debug.Log("Should Attack Once");
                 GM_Final.Instance.PlayerLives -= 1;
                 coolingDown = true;
-                combatCooldownCounter += Time.deltaTime;
+                
                
             }
 
-            if(combatCooldownCounter >= combatCooldown)
+            combatCooldownCounter += Time.deltaTime;
+
+            if (combatCooldownCounter >= combatCooldown)
             {
+                Debug.Log("Cooling down");
                 coolingDown = false;
-                combatCooldownCounter = 0;
+                combatCooldownCounter = 0f;
             }
              yield return null;
         }
@@ -274,7 +302,7 @@ public class EnemyScript : MonoBehaviour
             AttackingEnemy = false;
             
             
-            //Debug.Log("No Longer attacking players");
+            Debug.Log("No Longer attacking players");
         }
             
     }
@@ -342,5 +370,7 @@ public class EnemyScript : MonoBehaviour
     {
         Pool = pool;
     }
+
+
 }
 
